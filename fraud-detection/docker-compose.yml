@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: fraud_user
+      POSTGRES_PASSWORD: fraud_pass
+      POSTGRES_DB: fraud_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fraud_user -d fraud_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://fraud_user:fraud_pass@db:5432/fraud_db
+      SECRET_KEY: local_dev_secret_change_in_prod
+      API_USERNAME: analyst
+      API_PASSWORD: changeme
+      MODEL_VERSION: "1.0.0"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      # Mount model artefacts from host for easy iteration
+      - ./model:/app/model:ro
+
+volumes:
+  pgdata:

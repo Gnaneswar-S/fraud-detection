@@ -1,0 +1,4 @@
+# Model artefacts go here (not committed to git).
+# After running notebooks/model_training.ipynb you will have:
+#   fraud_model.pkl
+#   scaler.pkl

@@ -1,0 +1,35 @@
+# Render deployment manifest
+# https://render.com/docs/blueprint-spec
+#
+# Deploy: connect your GitHub repo to Render, select this file.
+# Set DATABASE_URL and SECRET_KEY as secret env vars in Render dashboard.
+
+services:
+  - type: web
+    name: fraud-detection-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free          # upgrade to starter ($7/mo) for always-on
+    region: oregon
+    branch: main
+    healthCheckPath: /health
+
+    envVars:
+      - key: MODEL_VERSION
+        value: "1.0.0"
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: API_USERNAME
+        value: analyst
+      # SECRET values — set these in Render dashboard, NOT here:
+      # - key: SECRET_KEY
+      # - key: API_PASSWORD
+      # - key: DATABASE_URL
+
+    autoDeploy: true    # redeploy on every push to main
+
+databases:
+  - name: fraud-db
+    databaseName: fraud_db
+    user: fraud_user
+    plan: free
