@@ -2,33 +2,30 @@
 __pycache__/
 *.py[cod]
 *.pyo
-*.pyd
 .Python
-*.egg
 *.egg-info/
+.eggs/
 dist/
 build/
-.eggs/
-*.whl
 
-# Virtual environments
+# Virtual environment
 .venv/
 venv/
 env/
+
+# Secrets — NEVER commit these
 .env
 !.env.example
 
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb_checkpoints
-
-# Model artefacts (large binaries — store in DVC or cloud)
+# Model artefacts — too large for git (use DVC or cloud storage)
 model/*.pkl
-model/*.joblib
 model/*.json
+model/*.joblib
 !model/.gitkeep
+!model/generate_demo_model.py
+!model/train.py
 
-# Data (never commit raw PII data)
+# Data — never commit PII data
 data/raw/*.csv
 data/raw/*.zip
 data/raw/*.parquet
@@ -37,23 +34,26 @@ data/raw/*.parquet
 # Results
 results/
 
+# DB files
+*.db
+*.sqlite
+
+# Jupyter
+.ipynb_checkpoints/
+
 # IDE
 .vscode/
 .idea/
 *.swp
-*.swo
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Docker
-.docker/
-
-# Coverage
+# pytest cache
+.pytest_cache/
 .coverage
 htmlcov/
-.pytest_cache/
 
-# SQLite (used in CI)
-*.db
+# Retraining log (generated at runtime)
+model/retraining_log.json
