@@ -1,0 +1,40 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Run lint
+        run: ruff .
+
+      - name: Run tests
+        env:
+          DATABASE_URL: "sqlite:///./test_ci.db"
+          SECRET_KEY: testsecretkey12345678901234567890
+          API_USERNAME: analyst
+          API_PASSWORD: changeme
+        run: |
+          python -m pytest tests/ -v
+
+      - name: Build Docker image
+        run: |
+          docker build -t fraud-detection-api .
